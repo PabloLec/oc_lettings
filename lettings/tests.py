@@ -1,4 +1,5 @@
 import pytest
+from django.urls import reverse
 from lettings.models import Letting, Address
 
 pytestmark = pytest.mark.django_db
@@ -40,3 +41,19 @@ class TestLetting:
         letting.delete()
         with pytest.raises(Letting.DoesNotExist):
             assert Letting.objects.get(title="Dummy Letting")
+
+
+def test_index(client):
+    response = str(client.get(reverse("lettings:index")).content)
+    assert "<title>Lettings</title>" in response
+    lettings = Letting.objects.all()
+    for el in lettings:
+        assert el.title in response
+
+
+def test_letting_page(client):
+    lettings = Letting.objects.all()
+    for el in lettings:
+        response = str(client.get(reverse("lettings:letting", args=(el.pk,))).content)
+        assert el.title in response
+        assert str(el.address.number) in response and el.address.street in response
