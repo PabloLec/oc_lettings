@@ -25,7 +25,9 @@ jobs:
           pkg-manager: pip
       - run:
           name: Run pytest
-          command: pytest
+          command: |
+            cd oc_lettings
+            pytest
   docker-build-and-push:
     environment:
       IMAGE_NAME: pablo213/oc_lettings
