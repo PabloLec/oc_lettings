@@ -8,8 +8,10 @@ WORKDIR /app
 COPY requirements.txt /app/
 RUN pip install -r requirements.txt
 COPY ./oc_lettings/ /app/
-RUN python manage.py collectstatic --noinput
 
-RUN useradd stduser
+RUN useradd  -ms /bin/bash stduser
+RUN chown -R stduser:stduser /app/
 USER stduser
+
+RUN python manage.py collectstatic --noinput
 CMD gunicorn --pythonpath oc_lettings oc_lettings_site.wsgi --bind 0.0.0.0:$PORT
