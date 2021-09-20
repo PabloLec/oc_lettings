@@ -14,9 +14,9 @@ workflows:
             branches:
               only: main
       - heroku-deploy:
-        requires:
-            - pytest
-            - docker-build-and-push
+          requires:
+              - pytest
+              - docker-build-and-push
           filters:
             branches:
               only: main
