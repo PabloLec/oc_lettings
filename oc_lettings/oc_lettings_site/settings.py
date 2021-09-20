@@ -3,16 +3,17 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-if os.environ.get("DJANGO_ENV") == "DEV":
-    DEBUG = True
-    SECRET_KEY = "fp$9^593hsriajg$_%=5trot9g!1qa@ew(o-1#@=&4%=hp46(s"
-elif os.environ.get("DJANGO_ENV") == "PROD":
-    DEBUG = False
-    SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
-else:
-    raise EnvironmentError("Set DJANGO_ENV as either DEV or PROD.")
+SECRET_KEY = os.environ.get("SECRET_KEY", default="foo")
 
-ALLOWED_HOSTS = ["oc-lettings-pablolec.heroku.app"]
+DEBUG = int(os.environ.get("DEBUG", default=0))
+
+ALLOWED_HOSTS = ["oc-lettings-pablolec.herokuapp.com", "localhost", "127.0.0.1"]
+
+if DEBUG == 0:
+    PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+    STATIC_ROOT = os.path.join(PROJECT_ROOT, "staticfiles")
+    STATICFILES_DIRS = (os.path.join(PROJECT_ROOT, "static"),)
+    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 
 # Application definition
@@ -37,6 +38,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 ROOT_URLCONF = "oc_lettings_site.urls"

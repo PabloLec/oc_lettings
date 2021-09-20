@@ -4,6 +4,9 @@ services:
   django:
     build: .
     command: python manage.py runserver 0.0.0.0:8000
+    environment:
+        - SECRET_KEY=${SECRET_KEY}
+        - DEBUG=${DEBUG}
     volumes:
       - ./oc_lettings:/app
     ports:
