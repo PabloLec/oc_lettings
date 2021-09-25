@@ -73,5 +73,33 @@ Dans le reste de la documentation sur le développement local, il est supposé q
 
 Utilisation de PowerShell, comme ci-dessus sauf :
 
-- Pour activer l'environnement virtuel, `.\venv\Scripts\Activate.ps1` 
+- Pour activer l'environnement virtuel, `.\venv\Scripts\Activate.ps1`
 - Remplacer `which <my-command>` par `(Get-Command <my-command>).Path`
+
+### Déploiement
+
+Le repository suit un flow CI/CD via CircleCI:
+
+1) Lancement des tests avec `pytest`.
+2) Si les tests ne retournent pas d'erreur:
+   - Build de l'image Docker
+   - Push de l'image vers Docker Hub
+3) Si les actions Docker réussissent:
+   - Déploiement sur Heroku
+
+Tout le processus est automatique sur push au repo GitHub.
+Sur la branche `main`, toutes les étapes sont effectuées jusqu'au déploiement Heroku.
+Sur les autres branches, seuls les tests sont effectués.
+
+La configuration du workflow CircleCI se trouve dans le fichier [.circleci/config.yml](.circleci/config.yml).
+La configuration de l'image Docker dans le fichier [Dockerfile](Dockerfile).
+
+Docker Hub: https://hub.docker.com/r/pablo213/oc_lettings
+Heroku: https://oc-lettings-pablolec.herokuapp.com/
+
+Pour tirer l'image de Docker Hub et l'éxécuter localement:
+```
+docker run -it --name django -e "PORT=8080" -e "DEBUG=1" -p 8080:8080 pablo213/oc_lettings
+```
+
+Le site sera servi sur http://127.0.0.1:8080.
